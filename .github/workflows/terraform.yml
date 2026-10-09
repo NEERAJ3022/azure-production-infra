@@ -11,27 +11,28 @@ permissions:
   contents: read
   id-token: write
 
-env:
-  TF_IN_AUTOMATION: true
-
 jobs:
-  terraform-plan:
-    name: Terraform Init Validate Plan
+  terraform:
+    name: Terraform Init Validate Plan Apply
     runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: environments/pre_prod
 
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
 
       - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v4
+        uses: hashicorp/setup-terraform@v3
 
       - name: Azure Login
         uses: azure/login@v2
         with:
-          client-id: ${{ secrets.AZURE_CLIENT_ID }}
-          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          client-id: ${{  41f07e27-510a-4f22-a6a4-3f919f6edf45 }}
+          tenant-id: ${{  e557fe4e-aeeb-4a1c-a74f-ed054a280a9b }}
+          subscription-id: ${{ df3f34d4-70dd-49a7-8efb-bce6201171f4 }}
 
       - name: Terraform Init
         run: terraform init -input=false
@@ -42,41 +43,7 @@ jobs:
       - name: Terraform Plan
         run: terraform plan -input=false -out=tfplan
 
-      - name: Upload Terraform Plan
-        uses: actions/upload-artifact@v4
-        with:
-          name: terraform-plan
-          path: tfplan
-          retention-days: 1
-
-  terraform-apply:
-    name: Terraform Apply
-    needs: terraform-plan
-    runs-on: ubuntu-latest
-    environment: production
-
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
-
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v4
-
-      - name: Azure Login
-        uses: azure/login@v2
-        with:
-          client-id: ${{ secrets.AZURE_CLIENT_ID }}
-          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-
-      - name: Terraform Init
-        run: terraform init -input=false
-
-      - name: Download Terraform Plan
-        uses: actions/download-artifact@v4
-        with:
-          name: terraform-plan
-
       - name: Terraform Apply
+        if: github.event_name == 'workflow_dispatch'
         run: terraform apply -input=false -auto-approve tfplan
 ```
