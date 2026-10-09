@@ -1,0 +1,26 @@
+name: My First Pipeline
+
+on:
+  push:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Check Repository
+        run: |
+          echo "GitHub Actions pipeline started"
+          echo "Repository: $GITHUB_REPOSITORY"
+          echo "Branch: $GITHUB_REF_NAME"
+          ls -la
+
+      - name: Success
+        run: echo "Pipeline completed successfully!"
