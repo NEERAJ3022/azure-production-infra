@@ -3,4 +3,8 @@ rg={
         name="nkrg1"
         location="eastus"
     }
+     rg2={
+        name="nkrg2"
+        location="westus"
+    }
 }
