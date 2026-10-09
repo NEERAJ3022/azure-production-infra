@@ -30,9 +30,9 @@ jobs:
       - name: Azure Login
         uses: azure/login@v2
         with:
-          client-id: ${{  41f07e27-510a-4f22-a6a4-3f919f6edf45 }}
-          tenant-id: ${{  e557fe4e-aeeb-4a1c-a74f-ed054a280a9b }}
-          subscription-id: ${{ df3f34d4-70dd-49a7-8efb-bce6201171f4 }}
+          client-id: ${{ '41f07e27-510a-4f22-a6a4-3f919f6edf45' }}
+          tenant-id: ${{ 'e557fe4e-aeeb-4a1c-a74f-ed054a280a9b' }}
+          subscription-id: ${{ 'df3f34d4-70dd-49a7-8efb-bce6201171f4' }}
 
       - name: Terraform Init
         run: terraform init -input=false
@@ -46,4 +46,4 @@ jobs:
       - name: Terraform Apply
         if: github.event_name == 'workflow_dispatch'
         run: terraform apply -input=false -auto-approve tfplan
-```
+
