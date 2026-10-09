@@ -1,26 +1,49 @@
-name: My First Pipeline
+```yaml
+name: Terraform CI Pipeline
 
 on:
   push:
+    branches:
+      - main
   workflow_dispatch:
 
 permissions:
   contents: read
 
 jobs:
-  test:
+  terraform:
+    name: Terraform Init Validate Plan
     runs-on: ubuntu-latest
 
     steps:
+      # Step 1: Checkout repository
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Check Repository
-        run: |
-          echo "GitHub Actions pipeline started"
-          echo "Repository: $GITHUB_REPOSITORY"
-          echo "Branch: $GITHUB_REF_NAME"
-          ls -la
+      # Step 2: Install Terraform
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
 
-      - name: Success
-        run: echo "Pipeline completed successfully!"
+      # Step 3: Check Terraform version
+      - name: Terraform Version
+        run: terraform --version
+
+      # Step 4: Check formatting
+      - name: Terraform Format Check
+        run: terraform fmt -check -recursive
+
+      # Step 5: Initialize Terraform
+      - name: Terraform Init
+        run: terraform init
+        working-directory: ./terraform
+
+      # Step 6: Validate Terraform configuration
+      - name: Terraform Validate
+        run: terraform validate
+        working-directory: ./terraform
+
+      # Step 7: Generate Terraform Plan
+      - name: Terraform Plan
+        run: terraform plan -input=false
+        working-directory: ./terraform
+```
